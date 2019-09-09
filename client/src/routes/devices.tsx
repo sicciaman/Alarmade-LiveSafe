@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Text, TouchableOpacity} from 'react-native';
 
 import { Card, ListItem, Header, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -7,8 +7,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Device } from '../classes/device';
 import DeviceListItem from '../components/DeviceItem';
 
+
 interface IState {
-  devices: Device[]
+  devices: Device[],
 };
 
 interface Props {}
@@ -18,7 +19,7 @@ export default class Devices extends Component<Props> {
   constructor(props: any) {
     super(props);
     this.state = {
-      devices: []
+      devices: [],
     }
   }
 
@@ -33,7 +34,13 @@ export default class Devices extends Component<Props> {
   };
 
   componentDidMount = () => {
-
+    fetch('http://10.150.147.46:3000/api/devices')
+      .then((response) => response.json())
+      .then(response => {
+        this.setState({
+          devices: response.data
+        })
+      })
   }
 
   render() {

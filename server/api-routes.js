@@ -10,6 +10,8 @@ router.get('/', function (req, res) {
 });
 
 const userController = require('./controllers/user.controller');
+const deviceController = require('./controllers/device.controller');
+
 
 router.route('/users')
   .get(userController.index)
@@ -17,6 +19,13 @@ router.route('/users')
 
 router.route('/users/:user_id')
   .delete(userController.deleteUser);
+
+router.route('/users/:user_id/devices')
+  .get(deviceController.index)
+  .put(deviceController.newDevice)
+
+router.route('/users/devices/:device_id')
+  .put(deviceController.deleteDevice);
 
 //Export API routes
 module.exports = router;

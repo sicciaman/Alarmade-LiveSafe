@@ -41,8 +41,6 @@ export default class Registration extends Component {
       .catch((error) => {
         console.error(error);
       });
-    //console.log(data);
-    //
   }
 
   render() {

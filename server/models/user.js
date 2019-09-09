@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
-
+const Device = require('./device');
 const Schema = mongoose.Schema;
+//const d = mongoose.model(Device.schema);
+
 
 //define user Schema
 const UserSchema = new Schema ({
   username: String,
-  password: String
+  password: String,
+  devices: [Device.schema],
 });
 
 

@@ -1,11 +1,12 @@
 //Import Express
 let express = require("express");
+// Import Mongoose
+let mongoose = require('mongoose');
 //Import routes
 let apiRoutes = require('./api-routes');
 // Import Body parser
 let bodyParser = require('body-parser');
-// Import Mongoose
-let mongoose = require('mongoose');
+
 
 // Initialize http server
 let app = express();
