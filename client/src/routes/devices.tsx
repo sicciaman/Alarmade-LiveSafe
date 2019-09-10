@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ScrollView, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, ScrollView, Alert} from 'react-native';
 
-import { Card, ListItem, Header, Button } from 'react-native-elements';
+import { Header, Button, Overlay, Divider, Text, Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Device } from '../classes/device';
 import DeviceListItem from '../components/DeviceItem';
 
-
 interface IState {
   devices: Device[],
+  addingNewDevice: boolean,
+  name: String,
+  ip: String
 };
 
 interface Props {}
@@ -20,27 +22,55 @@ export default class Devices extends Component<Props> {
     super(props);
     this.state = {
       devices: [],
+      addingNewDevice: false,
+      name: "Camera",
+      ip: ""
     }
   }
 
 
   setNewDevice = (): void => {
-    const device: Device[] = this.state.devices;
-    device.push({id:3, name:"RaspberryPi"})
     this.setState({
-      devices: device
+      addingNewDevice: true
     })
-
   };
 
+  addNewDevice = () : void => {
+    if(this.state.ip !== "" && this.state.ip.length > 14) {
+      fetch('http://10.150.147.46:3000/api/users/gallo/devices', {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: this.state.name,
+          ip: this.state.ip,
+        }),
+      })
+      .then(response => response.json()) //Promise
+      .then(response => {
+        console.log("Device aggiunto!");
+        this.componentDidMount();
+        this.setState({
+          addingNewDevice: false
+        })
+      });
+    } else {
+      Alert.alert(
+        'Inserisci un IP corretto!'
+      )
+    }
+  }
+
   componentDidMount = () => {
-    fetch('http://10.150.147.46:3000/api/devices')
+    fetch('http://10.150.147.46:3000/api/users/gallo/devices')
       .then((response) => response.json())
       .then(response => {
         this.setState({
           devices: response.data
-        })
-      })
+        });
+      });
   }
 
   render() {
@@ -59,7 +89,7 @@ export default class Devices extends Component<Props> {
             this.state.devices.length > 0 ? (
               this.state.devices.map((u, i) => {
                 return(
-                  <DeviceListItem name={u.name} key={i}/>
+                  <DeviceListItem name={u.name} ip={u.ip} key={i}/>
                 );
               })
             ) : (
@@ -67,8 +97,53 @@ export default class Devices extends Component<Props> {
                 <Text> Ancora nessun dispositivo associato.</Text>
               </View>
             )
-          }
+          }  
         </ ScrollView>
+        <Overlay
+            isVisible={this.state.addingNewDevice}
+            onBackdropPress={() => this.setState({ addingNewDevice: false })}
+            height="auto"
+          > 
+          <View>  
+            <Text 
+            h4
+            h4Style={styles.addDeviceTitle}
+            >
+              Device
+            </Text>
+            <Input
+              placeholder='Name'
+              defaultValue="Camera"
+              onChangeText={(text) => this.setState({name: text})}
+              leftIcon={
+                <Icon
+                  name='video-camera'
+                  size={24}
+                  color='black'
+                  style={{marginRight: 15}}
+                />
+              }
+            />
+            <Input
+              placeholder='IP address'
+              onChangeText={(text) => this.setState({ip: text})}
+              leftIcon={
+                <Icon
+                  name='location-arrow'
+                  size={24}
+                  color='black'
+                  style={{marginRight: 15}}
+                />
+              }
+            />
+            <View style={styles.addDeviceButton}>
+              <Button
+                title="Add"
+                onPress={() => this.addNewDevice()}//() => this.props.navigation.navigate('MyDevices')}
+              />
+            </View>     
+          </View>
+        </Overlay>
         <View style={styles.addDeviceContainer}>
           <Button
             buttonStyle={{marginTop: 30, width: '50%', height: 50}}
@@ -97,5 +172,12 @@ const styles = StyleSheet.create({
   addDevice: {
     marginTop: 20,
     alignItems: 'center'
+  },
+  addDeviceTitle: {
+    textAlign: 'center',
+    color: "#0f0f0f"
+  },
+  addDeviceButton: {
+    marginTop: 30
   }
 });

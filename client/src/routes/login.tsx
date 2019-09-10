@@ -19,8 +19,8 @@ export default class Registration extends Component {
   constructor(props: any) {
     super(props)
     this.state = {
-      email: "",
-      psw: "",
+      email: "gallo",
+      psw: "belotti",
       showPsw: true
     }
   };
@@ -55,6 +55,7 @@ export default class Registration extends Component {
           <Text style={styles.title}>Login</Text>
           <Input
             placeholder='Email'
+            defaultValue='gallo'
             onChangeText={(text) => this.setState({email: text})}
             leftIcon={
               <Icon
@@ -66,6 +67,7 @@ export default class Registration extends Component {
           />
           <Input
             placeholder='Password'
+            defaultValue='belotti'
             secureTextEntry={this.state.showPsw}
             onChangeText={(text) => this.setState({psw: text})}
             leftIcon={

@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Props {
   name: string,
+  ip: string
 }
 export default class DeviceItem extends Component<Props> {
   constructor(props: Props) {
@@ -20,6 +21,7 @@ export default class DeviceItem extends Component<Props> {
                 //key={this.props.key}
                 leftAvatar={ <Icon name='video-camera' size={30} />}
                 title={this.props.name}
+                subtitle={this.props.ip}
                 rightIcon={ <Icon name='ellipsis-v' size={25} />}
               />
       </Card>
