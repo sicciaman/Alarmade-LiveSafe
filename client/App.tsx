@@ -5,6 +5,7 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import Registration from './src/routes/registration';
 import Login from './src/routes/login';
 import MyDevices from './src/routes/devices';
+import Device from './src/routes/device';
 
 /*const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -29,6 +30,12 @@ const AppNavigator = createStackNavigator(
     },
     MyDevices: {
       screen: MyDevices,
+      navigationOptions:({ navigation }) => ({
+        header: null
+      })
+    },
+    Device: {
+      screen: Device,
       navigationOptions:({ navigation }) => ({
         header: null
       })

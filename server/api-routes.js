@@ -11,6 +11,7 @@ router.get('/', function (req, res) {
 
 const userController = require('./controllers/user.controller');
 const deviceController = require('./controllers/device.controller');
+const buddiesController = require('./controllers/buddies.controller');
 
 
 router.route('/users')
@@ -26,6 +27,9 @@ router.route('/users/:user_id/devices')
 
 router.route('/users/devices/:device_id')
   .put(deviceController.deleteDevice);
+
+router.route('/users/:user_id/:device_id/buddies')
+  .get(buddiesController.index);
 
 //Export API routes
 module.exports = router;

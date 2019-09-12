@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Buddy = require('./buddy');
 const Schema = mongoose.Schema;
 
 //define user Schema
@@ -7,13 +7,7 @@ const DeviceSchema = new Schema ({
     name: String,
     ip: String,
     port: String,
-    members: [{
-        name: String, 
-        photos: [{
-            data: Buffer,
-            contentType: String
-        }]
-    }]
+    members: [Buddy.schema]
 });
 
 

@@ -96,7 +96,7 @@ export default class Registration extends Component {
         <View style={styles.submitview}>
           <Button
             title="Submit"
-            onPress={() => this.checkInputData()}//() => this.props.navigation.navigate('MyDevices')}
+            onPress={() => this.checkInputData()}//() => this.props.navigation.navigate('Device')}
             buttonStyle={styles.submitbutton}
           />
         </View>
