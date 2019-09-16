@@ -35,14 +35,14 @@ export default class Devices extends Component<Props> {
   }
 
   componentDidMount = () => {
-    fetch('http://10.150.147.46:3000/api/users/gallo/devices')
+    fetch('http://192.168.137.176:3000/api/users/gallo/devices')
       .then((response) => response.json())
       .then(response => {
         this.setState({
           devices: response.data
         });
         console.log(this.state.devices)
-      });
+    });
   }
 
   render() {

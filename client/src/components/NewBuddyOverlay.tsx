@@ -8,7 +8,12 @@ interface IState {
     name: string,
 };
 
-interface Props {}
+interface Props {
+  device_id: string,
+  visibility: () => void,
+  updateBuddies: () => void,
+  addingNewBuddy: boolean
+}
 export default class NewDeviceOverlay extends Component<Props> {
     state: IState;
     constructor(props: any) {
@@ -20,7 +25,7 @@ export default class NewDeviceOverlay extends Component<Props> {
 
     addNewBuddy = () : void => {
         if(this.state.name !== "") {
-          fetch('http://10.150.147.46:3000/api/users/gallo/device_id/buddies', {
+          fetch('http://192.168.137.176:3000/api/users/gallo/' + this.props.device_id + '/buddies', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',

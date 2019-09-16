@@ -62,7 +62,7 @@ export default class Registration extends Component {
 
       if(!emailError || !pswError) {
         console.log("Input data ok!");
-          fetch('http://10.150.147.46:3000/api/users', {
+          fetch('http://192.168.137.176:3000/api/users', {
             method: 'POST',
             headers: {
               Accept: 'application/json',

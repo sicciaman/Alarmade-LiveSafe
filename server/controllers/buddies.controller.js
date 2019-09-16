@@ -5,6 +5,7 @@ Buddy = require('../models/buddy');
 
 module.exports = {
     index,
+    newBuddy
 };
 
 function index (req, res) {
@@ -16,9 +17,7 @@ function index (req, res) {
             });
         }
         user[0].devices.forEach(device => {
-            console.log(device._id)
-            console.log(req.params.device_id)
-            if (String(device._id) === String(req.params.device_id)) {
+            if (String(device._id) === req.params.device_id) {
                 res.json({
                     status: "success",
                     message: "buddies retrieved successfully",
@@ -26,9 +25,29 @@ function index (req, res) {
                 });
             }
         });
-        res.json({
-            status: "error",
-            message: "Device not found"
-        });
     });
+}
+
+function newBuddy (req, res) {
+    const buddy = new Buddy();
+    buddy.name = req.body.name;
+
+    User.find({username: req.params.user_id}, function(err, user) {
+        if (err)
+            res.json(err);
+        user[0].devices.forEach((dev) => {
+            console.log(dev._id);
+            console.log(req.params.device_id);
+            console.log("----------------")
+            if (String(dev._id) === req.params.device_id) {
+                dev.members.push(buddy);
+                user[0].save();
+                res.json({
+                    status: "success",
+                    message: 'Buddy added',
+                    data: user[0]
+                });
+            }
+        }); 
+    }); 
 }

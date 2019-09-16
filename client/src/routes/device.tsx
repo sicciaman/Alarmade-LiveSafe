@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, ScrollView, StyleSheet} from 'react-native';
 import {Header, Card, Button} from 'react-native-elements';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import NewBuddyOverlay from '../components/NewBuddyOverlay';
+import BuddyItem from '../components/BuddyItem';
+import {Buddy} from '../classes/buddy';
 
 interface IState {
     addingNewBuddy: boolean,
-    buddies: [],
+    buddies: Buddy[],
     _id: string,
     deviceName: string
 };
@@ -24,22 +26,26 @@ export default class Device extends Component {
             _id: "",
             deviceName: ""
         }
+
+        this.toggleBuddy = this.toggleBuddy.bind(this);
+      this.componentDidMount = this.componentDidMount.bind(this);
     }
     
-    componentDidMount() {
+    componentDidMount = () => {
       const { navigation } = this.props;
       this.setState({
         _id: navigation.getParam('_id'),
         deviceName: navigation.getParam('name')
-      });
-      fetch('http://10.150.147.46:3000/api/users/gallo/' + this.state._id + '/buddies')
-        .then((response) => response.json())
-        .then(response => {
-          this.setState({
-            buddies: response.data
-          });
-          console.log(this.state.buddies)
-      });
+      }, () =>  {
+        fetch('http://192.168.137.176:3000/api/users/gallo/' + this.state._id + '/buddies')
+          .then((response) => response.json())
+          .then(response => {
+            this.setState({
+              buddies: response.data
+            });
+            console.log(this.state.buddies)
+        });
+      });    
     }
 
     toggleBuddy = () : void => {
@@ -60,7 +66,7 @@ export default class Device extends Component {
               height: 75
           }}
           />
-          <NewBuddyOverlay visibility={this.toggleBuddy} addingNewBuddy={this.state.addingNewBuddy} updateBuddies={this.componentDidMount} />
+          <NewBuddyOverlay device_id={this.state._id} visibility={this.toggleBuddy} addingNewBuddy={this.state.addingNewBuddy} updateBuddies={this.componentDidMount} />
           <Card
               title='MANAGE DEVICE'
               >
@@ -73,6 +79,21 @@ export default class Device extends Component {
                   buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
                   title='ADD BUDDY' />
           </Card>
+          <ScrollView>
+          {
+            this.state.buddies.length > 0 ? (
+              this.state.buddies.map((u, i) => {
+                return(
+                  <BuddyItem name={u.name} _id={u._id} key={i} />
+                );
+              })
+            ) : (
+              <View style={styles.addDevice}>
+                <Text> Ancora nessun amico aggiunto.</Text>
+              </View>
+            )
+          }  
+        </ ScrollView>
         </View>
       );
   }

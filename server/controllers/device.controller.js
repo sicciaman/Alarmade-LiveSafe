@@ -34,7 +34,7 @@ function newDevice (req, res) {
     updateField = { $push: {devices: device}}
     
     // save the device and check for errors
-    User.updateOne({username: "gallo"}, updateField, function (err, user) {
+    User.updateOne({username: req.params.user_id}, updateField, function (err, user) {
         if (err)
             res.json(err);
         res.json({

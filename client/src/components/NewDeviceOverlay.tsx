@@ -9,7 +9,11 @@ interface IState {
     ip: string
   };
 
-interface Props {}
+interface Props {
+  visibility: () => void,
+  updateDevices: () => void,
+  addingNewDevice: boolean
+}
 export default class NewDeviceOverlay extends Component<Props> {
     state: IState;
     constructor(props: any) {
@@ -22,7 +26,7 @@ export default class NewDeviceOverlay extends Component<Props> {
 
     addNewDevice = () : void => {
         if(this.state.ip !== "" && this.state.ip.length > 14 && this.state.name !== "") {
-          fetch('http://10.150.147.46:3000/api/users/gallo/devices', {
+          fetch('http://192.168.137.176:3000/api/users/gallo/devices', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',

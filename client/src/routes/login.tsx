@@ -27,7 +27,7 @@ export default class Registration extends Component {
 
   checkInputData = (): void => {
     let auth : boolean = false;
-    fetch('http://10.150.147.46:3000/api/users')
+    fetch('http://192.168.137.176:3000/api/users')
       .then((response) => response.json())
       .then(response => {
         response.data.forEach(user => {
