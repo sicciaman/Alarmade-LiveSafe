@@ -84,7 +84,7 @@ export default class Device extends Component {
             this.state.buddies.length > 0 ? (
               this.state.buddies.map((u, i) => {
                 return(
-                  <BuddyItem name={u.name} _id={u._id} key={i} />
+                  <BuddyItem name={u.name} _id={u._id} key={i} device_id={this.state._id} updateBuddies={this.componentDidMount}/>
                 );
               })
             ) : (

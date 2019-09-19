@@ -46,7 +46,7 @@ function newDevice (req, res) {
 
 // Handle delete device
 function deleteDevice (req, res) {
-    User.updateOne({username: "gallo"}, {  $pull: { devices: { _id: req.params.device_id}}}, function (err, contact) {
+    User.updateOne({username: req.params.user_id}, {  $pull: { devices: { _id: req.params.device_id}}}, function (err, contact) {
         if (err)
             res.send(err);
         res.json({

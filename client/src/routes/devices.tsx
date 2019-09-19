@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, {Component, useLayoutEffect} from 'react';
 import {StyleSheet, View, ScrollView, Alert} from 'react-native';
 
-import { Header, Button, Overlay, Divider, Text, Input } from 'react-native-elements';
+import { Header, Button, Overlay, Divider, Text, Input, Tooltip } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Device } from '../classes/device';
@@ -61,7 +61,15 @@ export default class Devices extends Component<Props> {
             this.state.devices.length > 0 ? (
               this.state.devices.map((u, i) => {
                 return(
-                  <DeviceListItem name={u.name} ip={u.ip} members={u.members} _id={u._id} key={i} onPress={() => this.props.navigation.navigate('Device')}/>
+                    <DeviceListItem 
+                      name={u.name} 
+                      ip={u.ip} 
+                      members={u.members} 
+                      _id={u._id} 
+                      key={i} 
+                      updateDevices={this.componentDidMount}
+                      //onPress={() => this.props.navigation.navigate('Device')}   
+                    />
                 );
               })
             ) : (

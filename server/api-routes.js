@@ -25,12 +25,15 @@ router.route('/users/:user_id/devices')
   .get(deviceController.index)
   .put(deviceController.newDevice);
 
-router.route('/users/devices/:device_id')
+router.route('/users/:user_id/devices/:device_id')
   .put(deviceController.deleteDevice);
 
 router.route('/users/:user_id/:device_id/buddies')
   .get(buddiesController.index)
   .put(buddiesController.newBuddy);
+
+router.route('/users/:user_id/:device_id/:buddy_id')
+  .put(buddiesController.deleteBuddy);
 
 //Export API routes
 module.exports = router;
