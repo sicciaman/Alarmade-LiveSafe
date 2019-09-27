@@ -17,7 +17,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 //Connect to Mongoose and set connection variable
-mongoose.connect('mongodb://localhost/alarmade', { useNewUrlParser: true });
+const uri = "";
+mongoose.connect(uri, { useNewUrlParser: true });
 const db = mongoose.connection;
 // Added check for DB connection
 if(!db)
@@ -40,3 +41,4 @@ const server = app.listen(3000, () => {
   const { address, port } = server.address();
   console.log(`Listening at http:/localhost:${port}`);
 });
+

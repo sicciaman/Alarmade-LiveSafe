@@ -25,6 +25,9 @@ router.route('/users/:user_id/devices')
   .get(deviceController.index)
   .put(deviceController.newDevice);
 
+router.route('/users/:user_id/:device_id/setStatus')
+  .put(deviceController.setStatus);
+
 router.route('/users/:user_id/devices/:device_id')
   .put(deviceController.deleteDevice);
 

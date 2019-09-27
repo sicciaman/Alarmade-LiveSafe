@@ -26,7 +26,7 @@ export default class NewDeviceOverlay extends Component<Props> {
 
     addNewDevice = () : void => {
         if(this.state.ip !== "" && this.state.ip.length > 14 && this.state.name !== "") {
-          fetch('http://192.168.137.176:3000/api/users/gallo/devices', {
+          fetch('http://192.168.137.1:3000/api/users/gallo/devices', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',

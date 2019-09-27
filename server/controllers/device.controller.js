@@ -5,6 +5,7 @@ Device = require('../models/device');
 module.exports = {
     index,
     newDevice,
+    setStatus,
     deleteDevice
 };
 
@@ -43,6 +44,28 @@ function newDevice (req, res) {
         });
     });
 };
+
+// Set device status
+function setStatus (req, res) {
+    User.find({username: req.params.user_id}, function(err, user) {
+        if (err)
+            res.json(err);
+        user[0].devices.forEach((dev) => {
+            console.log(dev._id);
+            console.log(req.params.device_id);
+            console.log("----------------")
+            if (String(dev._id) === req.params.device_id) {
+                dev.status = req.body.status;
+                user[0].save();
+                res.json({
+                    status: "success",
+                    message: 'Status updated',
+                    data: user[0]
+                });
+            }
+        }); 
+    }); 
+}
 
 // Handle delete device
 function deleteDevice (req, res) {

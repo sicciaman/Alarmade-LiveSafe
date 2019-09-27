@@ -7,6 +7,10 @@ const DeviceSchema = new Schema ({
     name: String,
     ip: String,
     port: String,
+    status: {
+        type: Boolean,
+        default: false
+    },
     members: [Buddy.schema]
 });
 

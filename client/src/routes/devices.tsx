@@ -1,5 +1,5 @@
 import React, {Component, useLayoutEffect} from 'react';
-import {StyleSheet, View, ScrollView, Alert} from 'react-native';
+import {StyleSheet, View, ScrollView, Alert, Switch, TouchableWithoutFeedback} from 'react-native';
 
 import { Header, Button, Overlay, Divider, Text, Input, Tooltip } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -7,10 +7,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Device } from '../classes/device';
 import DeviceListItem from '../components/DeviceItem';
 import NewDeviceOverlay from '../components/NewDeviceOverlay';
+import Hoc from '../utils/hoc';
+
 
 interface IState {
   devices: Device[],
-  addingNewDevice: boolean,
+  addingNewDevice: boolean
 };
 
 interface Props {}
@@ -21,7 +23,7 @@ export default class Devices extends Component<Props> {
     super(props);
     this.state = {
       devices: [],
-      addingNewDevice: false,
+      addingNewDevice: false
     }
 
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -35,7 +37,7 @@ export default class Devices extends Component<Props> {
   }
 
   componentDidMount = () => {
-    fetch('http://192.168.137.176:3000/api/users/gallo/devices')
+    fetch('http://192.168.137.1:3000/api/users/gallo/devices')
       .then((response) => response.json())
       .then(response => {
         this.setState({
@@ -56,37 +58,67 @@ export default class Devices extends Component<Props> {
             height: 75
           }}
         />
-        <ScrollView>
-          {
+        {
             this.state.devices.length > 0 ? (
-              this.state.devices.map((u, i) => {
-                return(
-                    <DeviceListItem 
-                      name={u.name} 
-                      ip={u.ip} 
-                      members={u.members} 
-                      _id={u._id} 
-                      key={i} 
-                      updateDevices={this.componentDidMount}
-                      //onPress={() => this.props.navigation.navigate('Device')}   
-                    />
-                );
-              })
-            ) : (
-              <View style={styles.addDevice}>
-                <Text> Ancora nessun dispositivo associato.</Text>
-              </View>
-            )
-          }  
-        </ ScrollView>
+              <Hoc>
+                <ScrollView style={{flex: 1, flexDirection: 'row'}}>
+                  { this.state.devices.map((u, i) => {
+                    return(
+                      <DeviceListItem 
+                        name={u.name} 
+                        ip={u.ip} 
+                        status={u.status}
+                        members={u.members} 
+                        _id={u._id}    
+                        key={i}       
+                        updateDevices={this.componentDidMount}
+                        style={{flex:0.9, height: 50}} 
+                      />
+                    );
+                  })
+                  }
+                </ ScrollView>
+                <View style={styles.addDeviceContainer}>
+                  <Button
+                    buttonStyle={{marginTop: 30, width: '50%', height: 50}}
+                    title="Aggiungi dispositivo"
+                    onPress={() => this.toggleOverlay()}
+                  />
+                </ View>
+              </Hoc>
+        ) : (
+          <View style={{alignItems: 'center', flex: 1}}>
+            <ScrollView
+              style={{width: '80%', marginTop: 25}}
+            >
+              <TouchableWithoutFeedback
+                onPress={() => this.toggleOverlay()}
+              >
+                <View
+                  style={{   
+                    height: 200, 
+                    borderWidth: 2, 
+                    borderColor:'rgba(0,0,0,0.7)',
+                    justifyContent: 'center',
+                    alignItems: 'center' 
+                  }}
+                >
+                  <Icon
+                  name='plus-circle'
+                  size={50}  
+                  style={{color: '#000'}}        
+                />
+                <Text>Aggiungi dispositivo</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </ScrollView>
+            <View style={styles.addDevice}>
+              <Text> Ancora nessun dispositivo associato.</Text>
+            </View>
+          </View>
+        )
+        }
         <NewDeviceOverlay visibility={this.toggleOverlay} addingNewDevice={this.state.addingNewDevice} updateDevices={this.componentDidMount}/>
-        <View style={styles.addDeviceContainer}>
-          <Button
-            buttonStyle={{marginTop: 30, width: '50%', height: 50}}
-            title="Aggiungi dispositivo"
-            onPress={() => this.toggleOverlay()}
-          />
-        </ View>
       </View>
     );
   }
@@ -106,12 +138,11 @@ const styles = StyleSheet.create({
     marginBottom: 50
   },
   addDevice: {
-    marginTop: 20,
-    alignItems: 'center'
+    bottom: 20,
   },
   addDeviceTitle: {
     textAlign: 'center',
-    color: "#0f0f0f"
+    color: "#0f0f0f",
   },
   addDeviceButton: {
     marginTop: 30

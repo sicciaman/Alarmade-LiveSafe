@@ -25,7 +25,7 @@ export default class NewDeviceOverlay extends Component<Props> {
 
     addNewBuddy = () : void => {
         if(this.state.name !== "") {
-          fetch('http://192.168.137.176:3000/api/users/gallo/' + this.props.device_id + '/buddies', {
+          fetch('http://192.168.137.1:3000/api/users/gallo/' + this.props.device_id + '/buddies', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',

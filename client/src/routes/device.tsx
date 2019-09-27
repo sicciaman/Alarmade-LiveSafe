@@ -37,7 +37,7 @@ export default class Device extends Component {
         _id: navigation.getParam('_id'),
         deviceName: navigation.getParam('name')
       }, () =>  {
-        fetch('http://192.168.137.176:3000/api/users/gallo/' + this.state._id + '/buddies')
+        fetch('http://192.168.137.1:3000/api/users/gallo/' + this.state._id + '/buddies')
           .then((response) => response.json())
           .then(response => {
             this.setState({
