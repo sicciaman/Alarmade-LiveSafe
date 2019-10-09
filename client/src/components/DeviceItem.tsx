@@ -1,13 +1,16 @@
 import React, {Component, useState} from 'react';
-import { StyleSheet, Animated, Easing, Alert, Switch, View } from 'react-native';
+import { StyleSheet, Animated, Easing, Alert, Switch, View, Vibration } from 'react-native';
 
 import { Card, ListItem, Tooltip, Text } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
+
+import RNEventSource from 'react-native-event-source';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+const DURATION = [10000];
 
 
 interface Props {
@@ -21,7 +24,8 @@ interface Props {
 
 interface IState {
   showDeleteIcon: boolean,
-  active: boolean
+  active: boolean,
+  eventSource:RNEventSource
 }
 
 const motionAnim = new Animated.Value(0);
@@ -41,7 +45,8 @@ class DeviceItem extends Component<Props> {
 
     this.state = {
       showDeleteIcon: false,
-      active: this.props.status
+      active: this.props.status,
+      eventSource: null
     }
 
   }
@@ -113,22 +118,46 @@ class DeviceItem extends Component<Props> {
 
   setActive = () => {
     fetch('http://192.168.137.1:3000/api/users/gallo/' + this.props._id + '/setStatus', {
-            method: 'PUT',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              status: !this.state.active,
-            }),
-        })
-        .then(response => response.json()) //Promise
-        .then(response => {
-          console.log("Status updated!");
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        status: !this.state.active,
+      }),
+    })
+    .then(response => response.json()) //Promise
+    .then(response => {
+      console.log("Status updated!");
+      this.setState({
+        active: !this.state.active
+      }, () => {
+        console.log(this.state.active)
+        if (this.state.active) {    
           this.setState({
-            active: !this.state.active
+            eventSource: new RNEventSource('http://' + this.props.ip + '/api/detectMotion')
+          }, () => {
+            this.state.eventSource.addEventListener('message', (e) => {
+              console.log(e.data);
+              this.state.eventSource.removeAllListeners();
+              this.state.eventSource.close();
+            });
+          })        
+        } else {
+          if(this.state.eventSource != null) {
+            this.state.eventSource.removeAllListeners();
+            this.state.eventSource.close();
+          }
+          fetch('http://' + this.props.ip + '/api/turnLightOff')
+          .then(response => response.json()) //Promise
+          .then(response => {
+            console.log(response.data);
+            //Vibration.cancel();
           });
-        })
+        }
+      });  
+    })
   }
 
   render() {  

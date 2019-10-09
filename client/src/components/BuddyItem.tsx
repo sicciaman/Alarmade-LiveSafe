@@ -33,7 +33,7 @@ class BuddyItem extends Component<Props> {
   } 
 
   deleteBuddy = () : void => {
-    fetch('http://192.168.137.1:3000/api/users/gallo/' + this.props.device_id + '/' + this.props._id, {
+    fetch('http://10.150.147.71:3000/api/users/gallo/' + this.props.device_id + '/' + this.props._id, {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
