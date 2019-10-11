@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button } from 'react-native-elements';
 
 import Header from '../../components/Logo';
-import validate from './validate';
+import validate from '../utils/validate';
 
 
 interface IState {
@@ -97,7 +97,7 @@ export default class Registration extends Component {
           <Input
             placeholder='Email'
             onChangeText={(text) => this.setState({email: text})}
-            errorMessage={this.state.emailError ? "Inserisci un indirizzo email valido" : ""}
+            errorMessage={this.state.emailError ? "Valid Email address is required" : ""}
             leftIcon={
               <Icon
                 name='user'
@@ -110,7 +110,7 @@ export default class Registration extends Component {
             placeholder='Password'
             secureTextEntry={true}
             onChangeText={(text) => this.checkPsw(text)}
-            errorMessage={this.state.pswError ? "Assicurati che la password contenga almeno 8 caratteri" : ""}
+            errorMessage={this.state.pswError ? "Password must have at least 8 characters" : ""}
             leftIcon={
               <Icon
                 name='lock'
@@ -123,7 +123,7 @@ export default class Registration extends Component {
             placeholder='Conferma Password'
             secureTextEntry={true}
             onChangeText={(text) => this.checkConfirmPsw(text)}
-            errorMessage={this.state.confirmPsw !== "" ? (this.state.passwordValidation ? "" : "Le password non combaciano") : "" }
+            errorMessage={this.state.confirmPsw !== "" ? (this.state.passwordValidation ? "" : "Passwords don't match") : "" }
             leftIcon={
               <Icon
                 name='lock'
@@ -136,7 +136,7 @@ export default class Registration extends Component {
             style={styles.loginlink}
             onPress={() => this.props.navigation.navigate('Home')}
             >
-            Sei già registrato? Accedi ora.
+            Already registered? Go to login.
           </Text>
         </ScrollView>
         <View style={styles.submitview}>

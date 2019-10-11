@@ -9,6 +9,7 @@ module.exports = {
     deleteBuddy
 };
 
+// GET all buddies for requested user
 function index (req, res) {
     User.find({username: req.params.user_id}, function (err, user) {
         if (err) {
@@ -29,6 +30,7 @@ function index (req, res) {
     });
 }
 
+// ADD new buddy to list
 function newBuddy (req, res) {
     const buddy = new Buddy();
     buddy.name = req.body.name;
@@ -53,6 +55,7 @@ function newBuddy (req, res) {
     }); 
 }
 
+// REMOVE selected buddy
 function deleteBuddy (req, res) {
     User.find({username: req.params.user_id}, function(err, user) {
         if (err)

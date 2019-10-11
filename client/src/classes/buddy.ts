@@ -1,3 +1,4 @@
+// Buddy class
 export class Buddy {
     name: string;
     _id: string;

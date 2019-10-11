@@ -1,3 +1,4 @@
+// User Devices View - Possibility to add a new Device or remove
 import React, {Component, useLayoutEffect} from 'react';
 import {StyleSheet, View, ScrollView, Alert, Switch, TouchableWithoutFeedback} from 'react-native';
 
@@ -12,7 +13,8 @@ import Hoc from '../utils/hoc';
 
 interface IState {
   devices: Device[],
-  addingNewDevice: boolean
+  addingNewDevice: boolean,
+  email: string
 };
 
 interface Props {}
@@ -23,27 +25,35 @@ export default class Devices extends Component<Props> {
     super(props);
     this.state = {
       devices: [],
-      addingNewDevice: false
+      addingNewDevice: false,
+      email: ""
     }
 
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
+  // Show new Device overlay
   toggleOverlay = () : void => {
     this.setState({
       addingNewDevice: !this.state.addingNewDevice
     });
   }
 
+  // Invoke GET API for devices of logged user
   componentDidMount = () => {
-    fetch('http://192.168.137.1:3000/api/users/gallo/devices')
-      .then((response) => response.json())
-      .then(response => {
-        this.setState({
-          devices: response.data
-        });
-        console.log(this.state.devices)
+    const { navigation } = this.props;
+      this.setState({
+        email: navigation.getParam('email'),
+      }, () =>  {
+      fetch('http://192.168.137.1:3000/api/users/' + this.state.email + '/devices')
+        .then((response) => response.json())
+        .then(response => {
+          this.setState({
+            devices: response.data
+          });
+          console.log(this.state.devices)
+      });
     });
   }
 
@@ -52,7 +62,7 @@ export default class Devices extends Component<Props> {
       <View style={styles.container}>
         <Header
           leftComponent={{ icon: 'menu', color: '#fff' }}
-          centerComponent={{ text: 'I MIEI DISPOSITIVI', style: { color: '#fff' } }}
+          centerComponent={{ text: 'MY DEVICES', style: { color: '#fff' } }}
           rightComponent={{ icon: 'home', color: '#fff', onPress:() => this.props.navigation.navigate('MyDevices')}}
           containerStyle={{
             height: 75
@@ -66,6 +76,7 @@ export default class Devices extends Component<Props> {
                     return(
                       <DeviceListItem 
                         name={u.name} 
+                        email={this.state.email}
                         ip={u.ip} 
                         status={u.status}
                         members={u.members} 
@@ -108,17 +119,17 @@ export default class Devices extends Component<Props> {
                   size={50}  
                   style={{color: '#000'}}        
                 />
-                <Text>Aggiungi dispositivo</Text>
+                <Text>Add Device</Text>
                 </View>
               </TouchableWithoutFeedback>
             </ScrollView>
             <View style={styles.addDevice}>
-              <Text> Ancora nessun dispositivo associato.</Text>
+              <Text> No associated devices yet.</Text>
             </View>
           </View>
         )
         }
-        <NewDeviceOverlay visibility={this.toggleOverlay} addingNewDevice={this.state.addingNewDevice} updateDevices={this.componentDidMount}/>
+        <NewDeviceOverlay visibility={this.toggleOverlay} addingNewDevice={this.state.addingNewDevice} updateDevices={this.componentDidMount} user={this.state.email} />
       </View>
     );
   }

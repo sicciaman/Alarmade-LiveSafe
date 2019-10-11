@@ -1,3 +1,4 @@
+// New Device Window Component
 import React, {Component} from 'react';
 import {StyleSheet, View, Alert} from 'react-native';
 
@@ -12,7 +13,8 @@ interface IState {
 interface Props {
   visibility: () => void,
   updateDevices: () => void,
-  addingNewDevice: boolean
+  addingNewDevice: boolean,
+  user: string
 }
 export default class NewDeviceOverlay extends Component<Props> {
     state: IState;
@@ -24,9 +26,11 @@ export default class NewDeviceOverlay extends Component<Props> {
           }
     }
 
+    // Invoke after user press submit button
     addNewDevice = () : void => {
+      // Call PUT API for update devices of current user
         if(this.state.ip !== "" && this.state.ip.length > 14 && this.state.name !== "") {
-          fetch('http://192.168.137.1:3000/api/users/gallo/devices', {
+          fetch('http://192.168.137.1:3000/api/users/' + this.props.user + '/devices', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -40,12 +44,15 @@ export default class NewDeviceOverlay extends Component<Props> {
           .then(response => response.json()) //Promise
           .then(response => {
             console.log("Device aggiunto!");
+            // Update devices list
             this.props.updateDevices();
+            // Hidden add Device window
             this.props.visibility();
           });
         } else {
+          // Alert user to insert valid fields
           Alert.alert(
-            'Inserisci un nome e un IP corretto!'
+            'Insert valid fields!'
           )
         }
       }
@@ -91,7 +98,7 @@ export default class NewDeviceOverlay extends Component<Props> {
                     <View style={styles.addDeviceButton}>
                         <Button
                         title="Add"
-                        onPress={() => this.addNewDevice()}//() => this.props.navigation.navigate('MyDevices')}
+                        onPress={() => this.addNewDevice()}
                         />
                     </View>     
                 </View>

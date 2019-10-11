@@ -1,3 +1,4 @@
+// BuddyItem component displayed when user select a Device
 import React, {Component, useState} from 'react';
 import { StyleSheet, Animated, Easing, Alert, Switch, View, Vibration } from 'react-native';
 
@@ -5,16 +6,17 @@ import { Card, ListItem, Tooltip, Text } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 
 import RNEventSource from 'react-native-event-source';
+import PushNotification from 'react-native-push-notification';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-const DURATION = [10000];
 
-
+// Parameters of Device
 interface Props {
   name: string,
+  email: string,
   ip: string,
   _id: string,
   status: boolean,
@@ -25,12 +27,14 @@ interface Props {
 interface IState {
   showDeleteIcon: boolean,
   active: boolean,
-  eventSource:RNEventSource
+  eventSourceMotion:RNEventSource,
+  eventSourceVideo: RNEventSource
 }
 
+// Variable for deleteIcon animation
 const motionAnim = new Animated.Value(0);
 
-
+// Animation parameters
 const spin = motionAnim.interpolate({
   inputRange: [0,1],
   outputRange: ['-38deg', '38deg']
@@ -46,13 +50,27 @@ class DeviceItem extends Component<Props> {
     this.state = {
       showDeleteIcon: false,
       active: this.props.status,
-      eventSource: null
+      eventSourceMotion: null,
+      eventSourceVideo: null
     }
-
+    this.sendNotification = this.sendNotification.bind(this);
   }
 
+  // Push Notification if motion sensor return 1
+  sendNotification() {
+    PushNotification.localNotification({
+      id: '1',
+      title: 'Caution!',
+      message: "Alarmade has detected an infringement!",
+      visibility: 'public',
+      vibrate: true,
+      repeateType: 'minute',
+    });
+  };
+
+   // Invoke after press deleteIcon of a device element -> invoke delete API
   deleteDevice = () : void => {
-    fetch('http://192.168.137.1:3000/api/users/gallo/devices/' + this.props._id, {
+    fetch('http://192.168.137.1:3000/api/users/' + this.props.email + '/devices/' + this.props._id, {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -65,15 +83,18 @@ class DeviceItem extends Component<Props> {
             this.setState({
               showDeleteIcon: false
             });
+            // Update Devices list 
             this.props.updateDevices();
           });
   }
 
+  // DeleteIcon animation 
   leftSpinDelete = () : void => {
     if (!this.state.showDeleteIcon) {
       this.setState({
         showDeleteIcon: true
       }, () => {
+        // Show a window alert to confirm action
         Alert.alert(
           'Deleting device',
           'Are you sure? This is a permanent action!',
@@ -104,6 +125,7 @@ class DeviceItem extends Component<Props> {
     })
   }
 
+  // DeleteIcon animation
   rightSpinDelete = () : void => {
     motionAnim.setValue(1);
     Animated.timing(motionAnim, {
@@ -116,14 +138,17 @@ class DeviceItem extends Component<Props> {
     })
   }
 
+  // Invoke when press switch button of a Device
   setActive = () => {
-    fetch('http://192.168.137.1:3000/api/users/gallo/' + this.props._id + '/setStatus', {
+    // Set status field in DB
+    fetch('http://192.168.137.1:3000/api/users/' + this.props.email + '/' + this.props._id + '/setStatus', {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        // Send !status of current device
         status: !this.state.active,
       }),
     })
@@ -131,29 +156,54 @@ class DeviceItem extends Component<Props> {
     .then(response => {
       console.log("Status updated!");
       this.setState({
+        // update component state
         active: !this.state.active
       }, () => {
         console.log(this.state.active)
+        // If device is active
         if (this.state.active) {    
           this.setState({
-            eventSource: new RNEventSource('http://' + this.props.ip + '/api/detectMotion')
+            // Invoke motion sensor API and wait for an event
+            eventSourceMotion: new RNEventSource('http://' + this.props.ip + '/api/detectMotion')
           }, () => {
-            this.state.eventSource.addEventListener('message', (e) => {
+            // Motion sensor respond only if capture motion
+            this.state.eventSourceMotion.addEventListener('message', (e) => {
               console.log(e.data);
-              this.state.eventSource.removeAllListeners();
-              this.state.eventSource.close();
+              // After API send a response, we close communication
+              this.state.eventSourceMotion.removeAllListeners();
+              this.state.eventSourceMotion.close();
+              // Push an Alert notification 
+              this.sendNotification();
+              this.setState({
+                // Invoke Camera API to start registration
+                eventSourceVideo: new RNEventSource('http://' + this.props.ip + '/api/startRec')
+              }, () => {
+                this.state.eventSourceVideo.addEventListener('message', (e) => {
+                  console.log(e.data);
+                  // When camera stop recording, send a response e stop listen for an event
+                  this.state.eventSourceVideo.removeAllListeners();
+                  this.state.eventSourceVideo.close();
+                });
+              });
             });
-          })        
+          });        
         } else {
-          if(this.state.eventSource != null) {
-            this.state.eventSource.removeAllListeners();
-            this.state.eventSource.close();
+          // if event Sources are activated and user turn off the device stop the communication with API on Raspberry
+          if(this.state.eventSourceMotion != null) {
+            this.state.eventSourceMotion.removeAllListeners();
+            this.state.eventSourceMotion.close();
           }
+          if(this.state.eventSourceVideo != null) {
+            this.state.eventSourceVideo.removeAllListeners();
+            this.state.eventSourceVideo.close();
+          }
+          // Cancel Notification 
+          PushNotification.cancelLocalNotifications({id: '1'});
+          // Turn off light 
           fetch('http://' + this.props.ip + '/api/turnLightOff')
           .then(response => response.json()) //Promise
           .then(response => {
             console.log(response.data);
-            //Vibration.cancel();
           });
         }
       });  
@@ -176,6 +226,7 @@ class DeviceItem extends Component<Props> {
             //key={this.props.key}
             onPress={() => this.props.navigation.navigate('Device', {
               _id: this.props._id,
+              email: this.props.email,
               name: this.props.name,
               ip: this.props.ip,
               members: this.props.members,

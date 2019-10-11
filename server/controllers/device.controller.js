@@ -9,6 +9,7 @@ module.exports = {
     deleteDevice
 };
 
+// GET all devices of current user
 function index (req, res) {
     User.find({username: req.params.user_id}, function (err, user) {
         if (err) {

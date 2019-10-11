@@ -1,3 +1,4 @@
+// New Buddy Window Component
 import React, {Component} from 'react';
 import {StyleSheet, View, Alert} from 'react-native';
 
@@ -12,7 +13,8 @@ interface Props {
   device_id: string,
   visibility: () => void,
   updateBuddies: () => void,
-  addingNewBuddy: boolean
+  addingNewBuddy: boolean,
+  user: string
 }
 export default class NewDeviceOverlay extends Component<Props> {
     state: IState;
@@ -23,9 +25,11 @@ export default class NewDeviceOverlay extends Component<Props> {
         }
     }
 
+    // Invoke after user press submit button
     addNewBuddy = () : void => {
+        // Call PUT API for update buddies of current device
         if(this.state.name !== "") {
-          fetch('http://192.168.137.1:3000/api/users/gallo/' + this.props.device_id + '/buddies', {
+          fetch('http://192.168.137.1:3000/api/users/' + this.props.user + '/' + this.props.device_id + '/buddies', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -38,10 +42,13 @@ export default class NewDeviceOverlay extends Component<Props> {
           .then(response => response.json()) //Promise
           .then(response => {
             console.log("New Buddy!");
+            // Update buddies list
             this.props.updateBuddies();
+            // Hidden add Buddy window
             this.props.visibility();
           });
         } else {
+          // Alert user to insert a valid name field
           Alert.alert(
             'Insert name for your buddy!'
           )
@@ -77,7 +84,7 @@ export default class NewDeviceOverlay extends Component<Props> {
                     <View style={styles.addBuddyButton}>
                         <Button
                         title="Add"
-                        onPress={() => this.addNewBuddy()}//() => this.props.navigation.navigate('MyDevices')}
+                        onPress={() => this.addNewBuddy()}
                         />
                     </View>     
                 </View>

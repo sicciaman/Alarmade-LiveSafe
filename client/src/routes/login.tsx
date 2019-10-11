@@ -19,8 +19,8 @@ export default class Registration extends Component {
   constructor(props: any) {
     super(props)
     this.state = {
-      email: "gallo",
-      psw: "belotti",
+      email: "",
+      psw: "",
       showPsw: true
     }
   };
@@ -32,7 +32,9 @@ export default class Registration extends Component {
       .then(response => {
         response.data.forEach(user => {
           if (user.username === this.state.email && user.password === this.state.psw) {
-            this.props.navigation.navigate('MyDevices')
+            this.props.navigation.navigate('MyDevices', {
+              email: this.state.email
+            });
             auth = true;
           }
         });
@@ -55,7 +57,7 @@ export default class Registration extends Component {
           <Text style={styles.title}>Login</Text>
           <Input
             placeholder='Email'
-            defaultValue='gallo'
+            defaultValue=''
             onChangeText={(text) => this.setState({email: text})}
             leftIcon={
               <Icon
@@ -67,7 +69,7 @@ export default class Registration extends Component {
           />
           <Input
             placeholder='Password'
-            defaultValue='belotti'
+            defaultValue=''
             secureTextEntry={this.state.showPsw}
             onChangeText={(text) => this.setState({psw: text})}
             leftIcon={
@@ -90,13 +92,13 @@ export default class Registration extends Component {
             style={styles.registerlink}
             onPress={() => this.props.navigation.navigate('Registration')}
             >
-            Ancora non sei registrato?
+            Sign in now!
           </Text>
         </ScrollView>
         <View style={styles.submitview}>
           <Button
             title="Submit"
-            onPress={() => this.checkInputData()}//() => this.props.navigation.navigate('Device')}
+            onPress={() => this.checkInputData()}
             buttonStyle={styles.submitbutton}
           />
         </View>

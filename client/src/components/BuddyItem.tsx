@@ -1,3 +1,4 @@
+// BuddyItem component displayed when user select a Device
 import React, {Component} from 'react';
 import {StyleSheet, Animated, Easing, Alert} from 'react-native';
 
@@ -8,8 +9,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
+// Parameters of Buddy 
 interface Props {
     name: string,
+    email: string,
     _id: string,
     device_id: string
     updateBuddies: () => void
@@ -19,6 +22,7 @@ interface IState {
   showDeleteIcon: boolean
 }
 
+// Variable for deleteIcon animation
 const motionAnim = new Animated.Value(0);
 
 class BuddyItem extends Component<Props> {
@@ -27,13 +31,15 @@ class BuddyItem extends Component<Props> {
   constructor(props: Props) {
       super(props);
 
+      // deleteIcon is hidden 
       this.state = {
         showDeleteIcon: false
       }
   } 
 
+  // Invoke after long press of buddyItem -> invoke delete API
   deleteBuddy = () : void => {
-    fetch('http://10.150.147.71:3000/api/users/gallo/' + this.props.device_id + '/' + this.props._id, {
+    fetch('http://10.150.147.71:3000/api/users/' + this.props.email + '/' + this.props.device_id + '/' + this.props._id, {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -43,18 +49,22 @@ class BuddyItem extends Component<Props> {
           .then(response => response.json()) //Promise
           .then(response => {
             console.log("Buddy deleted!");
+            // deleteIcon now Hidden
             this.setState({
               showDeleteIcon: false
             });
+            // Update Buddies list 
             this.props.updateBuddies();
           });
   }
 
+  // DeleteIcon animation 
   leftSpinDelete = () : void => {
     if (!this.state.showDeleteIcon) {
       this.setState({
         showDeleteIcon: true
       }, () => {
+        // Show a window alert to confirm action
         Alert.alert(
           'Deleting buddy',
           'Are you sure? This is a permanent action!',
@@ -85,6 +95,7 @@ class BuddyItem extends Component<Props> {
     })
   }
 
+  // DeleteIcon animation 
   rightSpinDelete = () : void => {
     motionAnim.setValue(1);
     Animated.timing(motionAnim, {
@@ -98,6 +109,7 @@ class BuddyItem extends Component<Props> {
   }
 
   render() {
+    // Animation parameters
     const spin = motionAnim.interpolate({
       inputRange: [0,1],
       outputRange: ['-38deg', '38deg']
@@ -105,13 +117,6 @@ class BuddyItem extends Component<Props> {
       return (
           <Card containerStyle={styles.buddy}>
             <ListItem
-              //key={this.props.key}
-              /*onPress={() => this.props.navigation.navigate('Device', {
-                _id: this.props._id,
-                name: this.props.name,
-                ip: this.props.ip,
-                members: this.props.members,
-              })}*/
               onLongPress={this.leftSpinDelete}
               leftAvatar={ <Icon name='user' size={30} />}
               title={this.props.name}

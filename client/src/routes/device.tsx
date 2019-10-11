@@ -1,3 +1,4 @@
+// Single Device View - Buddies List Displayed & possibility to add a new Buddy or remove
 import React, {Component} from 'react';
 import {Text, View, ScrollView, StyleSheet} from 'react-native';
 import {Header, Card, Button} from 'react-native-elements';
@@ -12,7 +13,8 @@ interface IState {
     addingNewBuddy: boolean,
     buddies: Buddy[],
     _id: string,
-    deviceName: string
+    deviceName: string,
+    email: string
 };
 
 export default class Device extends Component {
@@ -22,6 +24,7 @@ export default class Device extends Component {
         super(props);
         this.state = {
             addingNewBuddy: false,
+            email: "",
             buddies: [],
             _id: "",
             deviceName: ""
@@ -34,10 +37,12 @@ export default class Device extends Component {
     componentDidMount = () => {
       const { navigation } = this.props;
       this.setState({
+        email: navigation.getParam('email'),
         _id: navigation.getParam('_id'),
         deviceName: navigation.getParam('name')
       }, () =>  {
-        fetch('http://192.168.137.1:3000/api/users/gallo/' + this.state._id + '/buddies')
+        // Invoke GET API to retrieve buddies list
+        fetch('http://192.168.137.1:3000/api/users/' + this.state.email + '/' + this.state._id + '/buddies')
           .then((response) => response.json())
           .then(response => {
             this.setState({
@@ -48,6 +53,7 @@ export default class Device extends Component {
       });    
     }
 
+    // Show New Buddy Overlay
     toggleBuddy = () : void => {
         this.setState({
             addingNewBuddy: !this.state.addingNewBuddy
@@ -66,7 +72,7 @@ export default class Device extends Component {
               height: 75
           }}
           />
-          <NewBuddyOverlay device_id={this.state._id} visibility={this.toggleBuddy} addingNewBuddy={this.state.addingNewBuddy} updateBuddies={this.componentDidMount} />
+          <NewBuddyOverlay device_id={this.state._id} visibility={this.toggleBuddy} addingNewBuddy={this.state.addingNewBuddy} updateBuddies={this.componentDidMount} user={this.state.email} />
           <Card
               title='MANAGE DEVICE'
               >
@@ -84,12 +90,19 @@ export default class Device extends Component {
             this.state.buddies.length > 0 ? (
               this.state.buddies.map((u, i) => {
                 return(
-                  <BuddyItem name={u.name} _id={u._id} key={i} device_id={this.state._id} updateBuddies={this.componentDidMount}/>
+                  <BuddyItem 
+                    name={u.name} 
+                    email={this.state.email}
+                    _id={u._id} 
+                    key={i} 
+                    device_id={this.state._id} 
+                    updateBuddies={this.componentDidMount}
+                  />
                 );
               })
             ) : (
               <View style={styles.addDevice}>
-                <Text> Ancora nessun amico aggiunto.</Text>
+                <Text> No buddies added yet.</Text>
               </View>
             )
           }  
