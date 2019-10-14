@@ -15,6 +15,8 @@ I'm doing this little DIY project to experiment app development with React Nativ
 The Login view, where a registerd user can insert his personal **access informations**, with the possibility to show/hidden password field.
 After he press submit button, the data entered are compared to db users and eventually (if corrected) redirected to his **Homepage**.
 
+![Login](https://imgur.com/q0GsdUi.png)
+
 *Future possible implementation: a solid authentication system*
 
 ## Registration
@@ -23,6 +25,8 @@ If the user isn't registered yet, can click on link in Login screen and navigate
 - Password
 - Confirm Password
 The system check if email contains **special characters** like '@' or '.', while password length need to be at least 8.
+
+![Registration](https://imgur.com/E00w3EP.png)
 
 *Future possible implementation: check that email is unique data in DB to confirm registration*
 
@@ -36,6 +40,8 @@ If the event listener is triggered by a message, a **push notification** is disp
 
 If user **turns off** the device, the **smart bulb turns off and close the event listeners**.
 
+![Devices Homepage](https://imgur.com/zMbRhNl.png)
+
 *Future possible implementation: edit device informations - Human recognition to avoid pets detection*
 
 ## Device
@@ -43,5 +49,7 @@ If user **turns off** the device, the **smart bulb turns off and close the event
 
 This section is, at the moment, open for future developments. In this section, the user can see buddies(familiars, friends, etc.) of the selected device. The idea is to develop a facial recognition part that allow to the system to track, if alarm is triggered, that the cause was only a buddy maybe because he forgot keys inside or you are in vacation and your best friend must water the plants.
 So, to work, user needs to upload buddies photo or directly through the Raspberry create a dataset to train the facial recognition alghoritm.
+
+![Buddies](https://imgur.com/QZBpCsx.png)
 
 *Future possible implementation: show live streaming of current device camera*
