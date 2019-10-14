@@ -40,7 +40,7 @@ If the event listener is triggered by a message, a **push notification** is disp
 
 If user **turns off** the device, the **smart bulb turns off and close the event listeners**.
 
-![Devices Homepage](https://imgur.com/zMbRhNl.png)
+![Devices Homepage](https://imgur.com/ewVYgxA.png)
 
 *Future possible implementation: edit device informations - Human recognition to avoid pets detection*
 
