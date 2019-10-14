@@ -1,7 +1,7 @@
 # Alarmade-LiveSafe
 **A security system application working w/ Raspberry Pi**
 
-*Note: you need these components in the Raspberry to integrate all functions:* **PIR motion sensor**, **brightness-sensor**, **Yeelight Smart RGB Bulb** and **PiCamera module**. 
+*Note: you need these components to integrate all functions:* **PIR motion sensor**, **brightness-sensor**, **Yeelight Smart RGB Bulb** and **PiCamera module**. 
 
 I'm doing this little DIY project to experiment app development with React Native and communication of IoT devices in Raspberry field.
 
