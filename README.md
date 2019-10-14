@@ -12,7 +12,7 @@ I'm doing this little DIY project to experiment app development with React Nativ
 - **Device**
 
 ## Login
-The Login view, where a registerd user can insert his personal **access informations**, with the possibility to show/hidden password field.
+The Login view, where a registered user can insert his personal **access informations**, with the possibility to show/hidden password field.
 After he press submit button, the data entered are compared to db users and eventually (if corrected) redirected to his **Homepage**.
 
 ![Login](https://imgur.com/q0GsdUi.png)
