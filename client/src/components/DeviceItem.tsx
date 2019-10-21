@@ -164,7 +164,7 @@ class DeviceItem extends Component<Props> {
         if (this.state.active) {    
           this.setState({
             // Invoke motion sensor API and wait for an event
-            eventSourceMotion: new RNEventSource('http://' + this.props.ip + '/api/detectMotion')
+            eventSourceMotion: new RNEventSource('http://' + this.props.ip + ':8000/api/detectMotion')
           }, () => {
             // Motion sensor respond only if capture motion
             this.state.eventSourceMotion.addEventListener('message', (e) => {
@@ -176,7 +176,7 @@ class DeviceItem extends Component<Props> {
               this.sendNotification();
               this.setState({
                 // Invoke Camera API to start registration
-                eventSourceVideo: new RNEventSource('http://' + this.props.ip + '/api/startRec')
+                eventSourceVideo: new RNEventSource('http://' + this.props.ip + ':8000/api/startRec')
               }, () => {
                 this.state.eventSourceVideo.addEventListener('message', (e) => {
                   console.log(e.data);
@@ -200,7 +200,7 @@ class DeviceItem extends Component<Props> {
           // Cancel Notification 
           PushNotification.cancelLocalNotifications({id: '1'});
           // Turn off light 
-          fetch('http://' + this.props.ip + '/api/turnLightOff')
+          fetch('http://' + this.props.ip + ':8000/api/turnLightOff')
           .then(response => response.json()) //Promise
           .then(response => {
             console.log(response.data);

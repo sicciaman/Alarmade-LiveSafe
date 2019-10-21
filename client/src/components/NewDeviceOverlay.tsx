@@ -29,7 +29,7 @@ export default class NewDeviceOverlay extends Component<Props> {
     // Invoke after user press submit button
     addNewDevice = () : void => {
       // Call PUT API for update devices of current user
-        if(this.state.ip !== "" && this.state.ip.length > 14 && this.state.name !== "") {
+        if(this.state.ip !== "" && this.state.ip.length > 10 && this.state.name !== "") {
           fetch('http://192.168.137.1:3000/api/users/' + this.props.user + '/devices', {
             method: 'PUT',
             headers: {

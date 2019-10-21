@@ -1,6 +1,6 @@
 // Single Device View - Buddies List Displayed & possibility to add a new Buddy or remove
 import React, {Component} from 'react';
-import {Text, View, ScrollView, StyleSheet} from 'react-native';
+import {Text, View, ScrollView, StyleSheet, WebView} from 'react-native';
 import {Header, Card, Button} from 'react-native-elements';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,11 +8,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import NewBuddyOverlay from '../components/NewBuddyOverlay';
 import BuddyItem from '../components/BuddyItem';
 import {Buddy} from '../classes/buddy';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 interface IState {
     addingNewBuddy: boolean,
     buddies: Buddy[],
     _id: string,
+    ip: string,
     deviceName: string,
     email: string
 };
@@ -25,6 +27,7 @@ export default class Device extends Component {
         this.state = {
             addingNewBuddy: false,
             email: "",
+            ip: "",
             buddies: [],
             _id: "",
             deviceName: ""
@@ -39,6 +42,7 @@ export default class Device extends Component {
       this.setState({
         email: navigation.getParam('email'),
         _id: navigation.getParam('_id'),
+        ip: navigation.getParam('ip'),
         deviceName: navigation.getParam('name')
       }, () =>  {
         // Invoke GET API to retrieve buddies list
@@ -60,8 +64,12 @@ export default class Device extends Component {
         });
     }
 
-    render() {
+    formatHtml = () : string => {
+      return (`<html><body><img src="http://${this.state.ip}:8001/stream.mjpg" width="100%" style="background-color: white; min-height: 100%; min-width: 100%; position: fixed; top: 0; left: 0;"></body></html>`);
+    }
 
+    render() {
+      console.log(this.state.ip);
       return (
         <View style={styles.container}>
           <Header
@@ -72,6 +80,20 @@ export default class Device extends Component {
               height: 75
           }}
           />
+          <View style={{flexDirection: 'row', alignItems: 'center', top: 5, left: 10}}>
+            <Icon 
+              name='play-circle'
+              size={25}
+              style={styles.liveIcon} />
+            <Text style={{left: 10, fontSize: 20,color: '#000'}}>
+              Live Camera
+            </Text>
+          </View> 
+          <View style={{height: 300, margin: 10, borderWidth: 2, borderColor: 'rgba(199, 199, 199, 0.5)'}}>
+            <WebView
+              source={{html: this.formatHtml(), baseUrl: '/'}}
+              style={styles.streamContainer} />
+            </View>
           <NewBuddyOverlay device_id={this.state._id} visibility={this.toggleBuddy} addingNewBuddy={this.state.addingNewBuddy} updateBuddies={this.componentDidMount} user={this.state.email} />
           <Card
               title='MANAGE DEVICE'
@@ -116,6 +138,15 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#F5FCFF'
+    },
+    streamContainer: {
+      alignItems: 'center',
+      flex: 1,
+      margin: 2
+    },
+    liveIcon: {
+      textAlignVertical: 'center',
+      color: '#069910'
     },
     device: {
       borderRadius: 50
