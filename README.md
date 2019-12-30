@@ -48,8 +48,10 @@ If user **turns off** the device, the **smart bulb turns off and close the event
 *Work in progress*
 
 This section is, at the moment, open for future developments. In this section, the user can see buddies(familiars, friends, etc.) of the selected device. The idea is to develop a facial recognition part that allow to the system to track, if alarm is triggered, that the cause was only a buddy maybe because he forgot keys inside or you are in vacation and your best friend must water the plants.
-So, to work, user needs to upload buddies photo or directly through the Raspberry create a dataset to train the facial recognition alghoritm. In the last update, I've added a **live video streaming** of the selected camera to have a complete control of the situation.
+So, to work, user needs to upload buddies photo or directly through the Raspberry create a dataset to train the facial recognition alghoritm. 
+
+In the last update, I've added a **live video streaming** of the selected camera to have a complete control of the situation.
 
 ![Buddies](https://imgur.com/QZBpCsx.png)
 
-*Future possible implementation: show live streaming of current device camera*
+
